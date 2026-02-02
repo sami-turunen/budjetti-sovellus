@@ -10,6 +10,10 @@ app.get("/api/health", (req, res) => {
   res.json({ health: "Ok" });
 });
 
+app.get("/api/data", (req, res) => {
+  res.json({ data: "Data" });
+});
+
 app.listen(3001, () => {
   console.log("Server running on port 3001");
 });
