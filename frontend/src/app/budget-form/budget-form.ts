@@ -1,10 +1,4 @@
-import {
-  Component,
-  OnInit,
-  AfterViewInit,
-  ViewChild,
-  ElementRef
-} from '@angular/core';
+import { Component, OnInit, AfterViewInit, ViewChild, ElementRef } from '@angular/core';
 
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -46,18 +40,18 @@ export class BudgetFormComponent implements OnInit, AfterViewInit {
   constructor(private http: HttpClient) {
     this.tulot$ = this.refreshTulot$.pipe(
       switchMap(() => this.http.get<BudgetItem[]>(`${this.apiUrl}/tulot`)),
-      tap(data => {
+      tap((data) => {
         this.tLista = data;
         this.updateTotalsAndChart();
-      })
+      }),
     );
 
     this.menot$ = this.refreshMenot$.pipe(
       switchMap(() => this.http.get<BudgetItem[]>(`${this.apiUrl}/menot`)),
-      tap(data => {
+      tap((data) => {
         this.mLista = data;
         this.updateTotalsAndChart();
-      })
+      }),
     );
   }
 
@@ -103,15 +97,17 @@ export class BudgetFormComponent implements OnInit, AfterViewInit {
       type: 'pie',
       data: {
         labels: ['Tulot', 'Menot'],
-        datasets: [{
-          label: '€',
-          data: [this.totalTulot, this.totalMenot],
-          backgroundColor: ['#4caf50', '#f44336']
-        }]
+        datasets: [
+          {
+            label: '€',
+            data: [this.totalTulot, this.totalMenot],
+            backgroundColor: ['#4caf50', '#f44336'],
+          },
+        ],
       },
       options: {
         responsive: true,
-      }
+      },
     });
   }
 
