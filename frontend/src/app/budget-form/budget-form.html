@@ -1,20 +1,73 @@
-<div class="budget-form">
-  <h2>Budjettilaskuri</h2>
+<div class="app-container">
+  <header class="main-header">
+    <h1>Budjetti Sovellus</h1>
+    <div class="balance-card" [class.negative]="erotus < 0">
+      <span class="label">Nykyinen Saldo</span>
+      <h2 class="amount">{{ erotus }} €</h2>
+      <div class="mini-stats">
+        <span class="income">+{{ totalTulot }} €</span>
+        <span class="expense">-{{ totalMenot }} €</span>
+      </div>
+    </div>
+  </header>
 
-  <div>
-    <label for="income">Tulot (€):</label>
-    <select>
-        <option>Palkka</option>
-        <option>Ruoka</option>
-        <option>Asumislisä</option>
-    </select>
-    <br>
-    <input type="number" id="income">
-  </div>
+  <main class="dashboard-grid">
+    <section class="card tulo-card">
+      <div class="card-header">
+        <h3>Tulot</h3>
+        <div class="quick-add">
+          <input type="text" [(ngModel)]="newTulo.name" placeholder="Mistä rahaa tuli?" />
+          <div class="row">
+            <select [(ngModel)]="newTulo.category">
+              <option value="palkka">Palkka</option>
+              <option value="etuudet">Etuudet</option>
+              <option value="muu">Muu</option>
+            </select>
+            <input type="number" [(ngModel)]="newTulo.amount" placeholder="€" />
+            <button (click)="addTulo()" class="btn-add">+</button>
+          </div>
+        </div>
+      </div>
 
-  <button>Lisää</button>
+      <div class="list-container">
+        <div class="list-item" *ngFor="let item of tulot$ | async">
+          <div class="icon">📈</div>
+          <div class="info">
+            <span class="name">{{ item.name }}</span>
+            <span class="cat">{{ item.category }}</span>
+          </div>
+          <span class="val">+{{ item.amount }} €</span>
+        </div>
+      </div>
+    </section>
 
-  <div class="result">
-    <p>Kokonaisbudjetti €</p>
-  </div>
+    <section class="card meno-card">
+      <div class="card-header">
+        <h3>Menot</h3>
+        <div class="quick-add">
+          <input type="text" [(ngModel)]="newMeno.name" placeholder="Mihin rahat menivät?" />
+          <div class="row">
+            <select [(ngModel)]="newMeno.category">
+              <option value="ruoka">Ruoka</option>
+              <option value="asuminen">Asuminen</option>
+              <option value="muu">Muu</option>
+            </select>
+            <input type="number" [(ngModel)]="newMeno.amount" placeholder="€" />
+            <button (click)="addMeno()" class="btn-add">-</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="list-container">
+        <div class="list-item" *ngFor="let item of menot$ | async">
+          <div class="icon">📉</div>
+          <div class="info">
+            <span class="name">{{ item.name }}</span>
+            <span class="cat">{{ item.category }}</span>
+          </div>
+          <span class="val negative">-{{ item.amount }} €</span>
+        </div>
+      </div>
+    </section>
+  </main>
 </div>

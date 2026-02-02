@@ -1,6 +1,7 @@
 import { bootstrapApplication } from '@angular/platform-browser';
-import { appConfig } from './app/app.config';
-import { App } from './app/app';
+import { provideHttpClient } from '@angular/common/http';
+import { BudgetFormComponent } from './app/budget-form/budget-form';
 
-bootstrapApplication(App, appConfig)
-  .catch((err) => console.error(err));
+bootstrapApplication(BudgetFormComponent, {
+  providers: [provideHttpClient()],
+}).catch((err) => console.error(err));

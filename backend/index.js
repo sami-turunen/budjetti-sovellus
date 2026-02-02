@@ -1,11 +1,14 @@
 import express from "express";
 import mongoose from "mongoose";
 import dotenv from "dotenv";
+import cors from "cors";
 import Tulo from "./models/Tulo.js";
 import Meno from "./models/Meno.js";
 dotenv.config();
 
 const app = express();
+
+app.use(cors());
 app.use(express.json());
 
 // Tietokanta yhetys

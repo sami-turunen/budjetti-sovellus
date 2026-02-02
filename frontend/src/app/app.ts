@@ -1,12 +1,12 @@
 import { Component, signal } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
-import { BudgetForm } from './budget-form/budget-form';
+import { BudgetFormComponent } from './budget-form/budget-form';
 
 @Component({
   selector: 'app-root',
-  imports: [BudgetForm],
+  standalone: true,
+  imports: [BudgetFormComponent],
   templateUrl: './app.html',
-  styleUrl: './app.css'
+  styleUrls: ['./app.css'],
 })
 export class App {
   protected readonly title = signal('frontend-temp');
