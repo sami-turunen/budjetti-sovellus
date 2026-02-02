@@ -1,8 +1,16 @@
-import { Component, OnInit } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  AfterViewInit,
+  ViewChild,
+  ElementRef
+} from '@angular/core';
+
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
-import { Observable, tap, BehaviorSubject, switchMap } from 'rxjs';
+import { Observable, BehaviorSubject, switchMap, tap } from 'rxjs';
+import Chart from 'chart.js/auto';
 
 interface BudgetItem {
   name: string;
@@ -17,7 +25,7 @@ interface BudgetItem {
   templateUrl: './budget-form.html',
   styleUrls: ['./budget-form.css'],
 })
-export class BudgetFormComponent implements OnInit {
+export class BudgetFormComponent implements OnInit, AfterViewInit {
   private apiUrl = 'http://localhost:3001/api';
 
   private refreshTulot$ = new BehaviorSubject<void>(undefined);
@@ -29,23 +37,38 @@ export class BudgetFormComponent implements OnInit {
   private tLista: BudgetItem[] = [];
   private mLista: BudgetItem[] = [];
 
-  // Oletusarvot uusille riveille
   newTulo: BudgetItem = { name: '', amount: 0, category: 'palkka' };
   newMeno: BudgetItem = { name: '', amount: 0, category: 'ruoka' };
+
+  @ViewChild('acquisitions') canvas!: ElementRef<HTMLCanvasElement>;
+  chart!: Chart;
 
   constructor(private http: HttpClient) {
     this.tulot$ = this.refreshTulot$.pipe(
       switchMap(() => this.http.get<BudgetItem[]>(`${this.apiUrl}/tulot`)),
-      tap((data) => (this.tLista = data)),
+      tap(data => {
+        this.tLista = data;
+        this.updateTotalsAndChart();
+      })
     );
 
     this.menot$ = this.refreshMenot$.pipe(
       switchMap(() => this.http.get<BudgetItem[]>(`${this.apiUrl}/menot`)),
-      tap((data) => (this.mLista = data)),
+      tap(data => {
+        this.mLista = data;
+        this.updateTotalsAndChart();
+      })
     );
   }
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.refreshTulot$.next();
+    this.refreshMenot$.next();
+  }
+
+  ngAfterViewInit(): void {
+    this.createChart();
+  }
 
   addTulo(): void {
     if (!this.newTulo.name || this.newTulo.amount <= 0) return;
@@ -73,5 +96,29 @@ export class BudgetFormComponent implements OnInit {
 
   get erotus(): number {
     return this.totalTulot - this.totalMenot;
+  }
+
+  private createChart(): void {
+    this.chart = new Chart(this.canvas.nativeElement, {
+      type: 'pie',
+      data: {
+        labels: ['Tulot', 'Menot'],
+        datasets: [{
+          label: '€',
+          data: [this.totalTulot, this.totalMenot],
+          backgroundColor: ['#4caf50', '#f44336']
+        }]
+      },
+      options: {
+        responsive: true,
+      }
+    });
+  }
+
+  private updateTotalsAndChart(): void {
+    if (this.chart) {
+      this.chart.data.datasets[0].data = [this.totalTulot, this.totalMenot];
+      this.chart.update();
+    }
   }
 }
