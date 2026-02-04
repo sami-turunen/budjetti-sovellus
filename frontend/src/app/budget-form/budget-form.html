@@ -37,6 +37,7 @@
             <span class="cat">{{ item.category }}</span>
           </div>
           <span class="val">+{{ item.amount }} €</span>
+          <button (click)="deleteTulo(item._id!)" class="btn-delete">✕</button>
         </div>
       </div>
     </section>
@@ -66,6 +67,7 @@
             <span class="cat">{{ item.category }}</span>
           </div>
           <span class="val negative">-{{ item.amount }} €</span>
+          <button class="delete-btn" (click)="deleteMeno(item._id!)" class="btn-delete">✕</button>
         </div>
       </div>
     </section>

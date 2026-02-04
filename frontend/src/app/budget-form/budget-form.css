@@ -146,3 +146,10 @@ input[type='number'] {
 .val.negative {
   color: var(--danger);
 }
+
+.btn-delete {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--danger);
+}

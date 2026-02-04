@@ -10,6 +10,7 @@ interface BudgetItem {
   name: string;
   amount: number;
   category: string;
+  _id?: string;
 }
 
 @Component({
@@ -77,6 +78,44 @@ export class BudgetFormComponent implements OnInit, AfterViewInit {
     this.http.post(`${this.apiUrl}/menot`, this.newMeno).subscribe(() => {
       this.newMeno = { name: '', amount: 0, category: 'ruoka' };
       this.refreshMenot$.next();
+    });
+  }
+
+  deleteTulo(id: any): void {
+    if (!id) {
+      console.error('ID puuttuu!');
+      return;
+    }
+
+    console.log('Poistetaan tulo ID:llä:', id);
+
+    this.http.delete(`${this.apiUrl}/tulot/${id}`).subscribe({
+      next: () => {
+        console.log('Poisto onnistui');
+        this.refreshTulot$.next();
+      },
+      error: (err) => {
+        console.error('Virhe palvelimella:', err);
+      },
+    });
+  }
+
+  deleteMeno(id: any): void {
+    if (!id) {
+      console.error('ID puuttuu!');
+      return;
+    }
+
+    console.log('Poistetaan meno ID:llä:', id);
+
+    this.http.delete(`${this.apiUrl}/menot/${id}`).subscribe({
+      next: () => {
+        console.log('Poisto onnistui');
+        this.refreshMenot$.next();
+      },
+      error: (err) => {
+        console.error('Virhe palvelimella:', err);
+      },
     });
   }
 
